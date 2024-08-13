@@ -5,7 +5,7 @@
 <div id="badges" align="center">
   
   ![License](https://img.shields.io/github/license/georgejrdev/Lib-Utils.svg)
-  ![Version](https://img.shields.io/badge/version-1.0.0-53918E.svg)
+  ![Version](https://img.shields.io/badge/version-1.0.1-53918E.svg)
   ![Windows](https://img.shields.io/badge/made%20for-java-AD6845.svg)
 
 </div>
