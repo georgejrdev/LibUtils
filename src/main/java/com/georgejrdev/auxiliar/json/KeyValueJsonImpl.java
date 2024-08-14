@@ -2,30 +2,26 @@ package com.georgejrdev.auxiliar.json;
 
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.FileReader;
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.lang.reflect.Type;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.FileReader;
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.security.InvalidKeyException;
-import java.util.ArrayList;
-
 
 public class KeyValueJsonImpl implements KeyValueJson {
 
     private String path;
-    @SuppressWarnings("unused")
-    private boolean fileExist;
     private List<Map<String, Object>> content;
 
     public KeyValueJsonImpl(String path) {
         this.path = path;
-        this.fileExist = false;
         this.content = new ArrayList<>();
 
         createFile();
@@ -94,8 +90,6 @@ public class KeyValueJsonImpl implements KeyValueJson {
                 e.printStackTrace();
             }
         }
-
-        this.fileExist = true;
     }
 
 
