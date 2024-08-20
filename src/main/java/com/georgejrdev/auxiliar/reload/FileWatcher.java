@@ -10,18 +10,18 @@ public class FileWatcher implements Runnable {
     private final String fileToWatch;
     private final SimpleWebSocketServer webSocketServer;
     private final String fileToUpdate;
-    private final String content;
+    private final Parser parser;
     private final ManipulateFile manipulateFile;
 
     public FileWatcher(String fileToWatch, SimpleWebSocketServer webSocketServer) {
         this(fileToWatch, webSocketServer, null, null);
     }
 
-    public FileWatcher(String fileToWatch, SimpleWebSocketServer webSocketServer, String fileToUpdate, String content) {
+    public FileWatcher(String fileToWatch, SimpleWebSocketServer webSocketServer, String fileToUpdate, Parser parser) {
         this.fileToWatch = fileToWatch;
         this.webSocketServer = webSocketServer;
         this.fileToUpdate = fileToUpdate;
-        this.content = content;
+        this.parser = parser;
         this.manipulateFile = new ManipulateFile(); 
     }
     
@@ -42,7 +42,8 @@ public class FileWatcher implements Runnable {
                     if (event.kind() == StandardWatchEventKinds.ENTRY_MODIFY && changedFile.toString().equals(fileToWatch)) {
                         System.out.println("File Modified: " + changedFile);
 
-                        if (fileToUpdate != null && content != null) {
+                        if (fileToUpdate != null && parser != null) {
+                            String content = parser.parse(fileToWatch);
                             manipulateFile.writeFile(fileToUpdate, content);
                         }
 

@@ -4,16 +4,16 @@ public class HotReload {
 
     private final String fileToWatch;
     private final String fileToUpdate;
-    private final String content;
+    private final Parser parser;
 
     public HotReload(String fileToWatch, String fileToUpdate) {
         this(fileToWatch, fileToUpdate, null);
     }
 
-    public HotReload(String fileToWatch, String fileToUpdate, String content) {
+    public HotReload(String fileToWatch, String fileToUpdate, Parser parser) {
         this.fileToWatch = fileToWatch;
         this.fileToUpdate = fileToUpdate;
-        this.content = content;
+        this.parser = parser;
     }
 
     
@@ -30,7 +30,7 @@ public class HotReload {
         SimpleWebSocketServer webSocketServer = new SimpleWebSocketServer(8081);
         webSocketServer.start();
 
-        FileWatcher fileWatcher = new FileWatcher(this.fileToWatch, webSocketServer, this.fileToUpdate, this.content);
+        FileWatcher fileWatcher = new FileWatcher(this.fileToWatch, webSocketServer, this.fileToUpdate, this.parser);
         new Thread(fileWatcher).start();
     }
 }
