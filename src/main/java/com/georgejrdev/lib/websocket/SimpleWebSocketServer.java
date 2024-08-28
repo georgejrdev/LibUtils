@@ -1,73 +1,59 @@
 package com.georgejrdev.lib.websocket;
 
-import jakarta.websocket.server.ServerEndpoint;
-import jakarta.websocket.OnClose;
-import jakarta.websocket.OnOpen;
-import jakarta.websocket.OnMessage;
-import jakarta.websocket.Session;
-import jakarta.websocket.DeploymentException;
+import org.java_websocket.server.WebSocketServer;
+import org.java_websocket.handshake.ClientHandshake;
+import org.java_websocket.WebSocket;
 
-import org.glassfish.tyrus.server.Server;
-
-import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 
-@ServerEndpoint("/websocket")
-public class SimpleWebSocketServer {
+public class SimpleWebSocketServer extends WebSocketServer {
 
-    private Server server;
-    private static Set<Session> sessions = Collections.synchronizedSet(new HashSet<>());
+    private Set<WebSocket> clients = Collections.newSetFromMap(new ConcurrentHashMap<>());
+
+    public SimpleWebSocketServer(int port) {
+        super(new InetSocketAddress(port));
+    }
+
+
+    @Override
+    public void onOpen(WebSocket conn, ClientHandshake handshake) {
+        clients.add(conn);
+        System.out.println("New connection: " + conn.getRemoteSocketAddress());
+    }
+
+
+    @Override
+    public void onClose(WebSocket conn, int code, String reason, boolean remote) {
+        clients.remove(conn);
+        System.out.println("Connection closed: " + conn.getRemoteSocketAddress());
+    }
+
+
+    @Override
+    public void onMessage(WebSocket conn, String message) {
+        System.out.println("Message from client: " + message);
+    }
+
+
+    @Override
+    public void onError(WebSocket conn, Exception ex) {
+        ex.printStackTrace();
+    }
+
+
+    @Override
+    public void onStart() {
+        System.out.println("WebSocket server started successfully!");
+    }
     
-    
-    @OnOpen
-    public void onOpen(Session session) {
-        System.out.println("Connection opened: " + session.getId());
-    }
 
-
-    @OnMessage
-    public void onMessage(String message, Session session) throws IOException {
-        session.getBasicRemote().sendText(message);
-    }
-
-
-    @OnClose
-    public void onClose(Session session) {
-        System.out.println("Connection closed: " + session.getId());
-    }
-
-
-    public void start(String host, int port) {
-        server = new Server(host, port, "/", null, SimpleWebSocketServer.class);
-        try {
-            server.start();
-            System.out.println("WebSocket Server start on ws://" + host + ":" + port + "/websocket");
-        } catch (DeploymentException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    public void stop() {
-        if (server != null) {
-            server.stop();
-            System.out.println("Stop WebSocket Server.");
-        }
-    }
-
-
-    public void broadcast(String message) {
-        synchronized (sessions) {
-            for (Session session : sessions) {
-                try {
-                    session.getBasicRemote().sendText(message);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+    public void notifyClients(String message) {
+        for (WebSocket client : clients) {
+            client.send(message);
         }
     }
 }
