@@ -19,7 +19,7 @@ import com.georgejrdev.lib.http.SimpleHttpServer;
 public class SimpleHttpServerTest {
 
     private SimpleHttpServer httpServer;
-    private final int port = 8080;
+    private final int port = 8083;
     private final String filePath = "test.html";
 
     @Before
