@@ -33,6 +33,8 @@ public class SimpleHttpServer {
 
         server.setExecutor(null);
         server.start();
+
+        System.out.println("Http Server start on http://localhost:" + port);
     }
 
 
