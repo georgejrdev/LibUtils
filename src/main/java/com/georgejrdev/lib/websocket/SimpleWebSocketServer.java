@@ -10,12 +10,16 @@ import jakarta.websocket.DeploymentException;
 import org.glassfish.tyrus.server.Server;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @ServerEndpoint("/websocket")
 public class SimpleWebSocketServer {
 
     private Server server;
+    private static Set<Session> sessions = Collections.synchronizedSet(new HashSet<>());
     
     
     @OnOpen
@@ -51,6 +55,19 @@ public class SimpleWebSocketServer {
         if (server != null) {
             server.stop();
             System.out.println("Stop WebSocket Server.");
+        }
+    }
+
+
+    public void broadcast(String message) {
+        synchronized (sessions) {
+            for (Session session : sessions) {
+                try {
+                    session.getBasicRemote().sendText(message);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }
