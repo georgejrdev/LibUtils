@@ -1,5 +1,8 @@
 package com.georgejrdev.lib.reload;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.io.IOException;
 
 import com.georgejrdev.lib.http.SimpleHttpServer;
@@ -13,6 +16,7 @@ public class HotReload {
     private SimpleHttpServer httpServer;
     private ActionToFileWatcher actionToFileWatcher;
     private Parser parser;
+    private FileWatcher fileWatcher;
     
     private String fileToWatch;
     private String fileToUpdate;
@@ -28,7 +32,8 @@ public class HotReload {
         this.parser = parser;
         this.httpServer = new SimpleHttpServer();
         this.webSocketServer = new SimpleWebSocketServer(this.websocketPort);
-        this.actionToFileWatcher = new ActionToFileWatcher(this.webSocketServer, this.parser);
+        this.actionToFileWatcher = new ActionToFileWatcher(this.webSocketServer, this.parser, this.fileToUpdate, this.websocketPort);
+        this.fileWatcher = new FileWatcher(this.fileToWatch, this.actionToFileWatcher);
     }
 
     public HotReload(String fileToWatch, String fileToUpdate, int httpPort, int websocketPort){
@@ -44,10 +49,49 @@ public class HotReload {
                 e.printStackTrace();
             }
         }).start();
+        
+        this.webSocketServer.start();
 
-        webSocketServer.start();
+        new Thread(this.fileWatcher).start();
 
-        FileWatcher fileWatcher = new FileWatcher(this.fileToWatch, this.actionToFileWatcher);
-        new Thread(fileWatcher).start();
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            stop();            
+            System.out.println("| -- ---> Server is shutting down...");
+        }));
+    }
+
+
+    private void stop(){
+        try {
+            this.webSocketServer.stop();
+        } 
+        catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        this.httpServer.stop();
+        fileWatcher.stop();
+        
+        removeScriptToInitHotReloadOnHtml();
+    }
+
+
+    private void removeScriptToInitHotReloadOnHtml(){
+        Path path = Paths.get(this.fileToUpdate);
+
+        try {
+            if (!Files.exists(path)) {
+                System.out.println("File not found: " + this.fileToUpdate);
+                return;
+            }
+
+            String content = new String(Files.readAllBytes(path));
+            String modifiedContent = content.replaceAll("(?s)<script.*?>.*?</script>", "");
+
+            Files.write(path, modifiedContent.getBytes());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
