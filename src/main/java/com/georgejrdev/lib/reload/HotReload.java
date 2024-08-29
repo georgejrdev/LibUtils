@@ -55,24 +55,23 @@ public class HotReload {
         new Thread(this.fileWatcher).start();
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            stop();            
-            System.out.println("| -- ---> Server is shutting down...");
+            fileWatcher.stop();
+
+            try {
+                this.webSocketServer.stop();
+            } 
+            catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+    
+            this.httpServer.stop();
+            
+            removeScriptToInitHotReloadOnHtml();
+
+            System.out.println("");
+            System.out.println("---> Server is shutting down...");
+            System.out.println("");
         }));
-    }
-
-
-    private void stop(){
-        try {
-            this.webSocketServer.stop();
-        } 
-        catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        this.httpServer.stop();
-        fileWatcher.stop();
-        
-        removeScriptToInitHotReloadOnHtml();
     }
 
 

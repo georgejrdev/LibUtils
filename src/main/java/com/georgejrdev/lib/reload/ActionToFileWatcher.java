@@ -31,36 +31,51 @@ public class ActionToFileWatcher implements FileWatcherCallback {
 
     
     @Override
-    public void action(){
-
-        if (parser != null) {
-            parser.parse();
+    public void action() {
+        synchronized(this) {
+            if (parser != null) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                
+                parser.parse();
+            }
+            
             addScriptToInitHotReloadOnHtml();
+    
+            webSocketServer.notifyClients("reload");
         }
+    }
+    
 
-        webSocketServer.notifyClients("reload");
-    }    
-
-
-    private void addScriptToInitHotReloadOnHtml(){
-        System.out.println("opps");
+    private void addScriptToInitHotReloadOnHtml() {
         Path path = Paths.get(this.fileToUpdate);
-
+        
         String script = "<script> document.addEventListener('DOMContentLoaded', (event) => { var ws = new WebSocket('ws://localhost:"+this.websocketPort+"/reload'); ws.onmessage = function(event) { if (event.data === 'reload') { window.location.reload(); } }; }); </script>";
-
+        
         try {
             if (!Files.exists(path)){
                 System.out.println("File not found: " + path);
                 return;
             }
+    
+            String content = new String(Files.readAllBytes(path));
+            if (content.contains(script)) {
+                return;
+            }
+
+            Thread.sleep(100);
 
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(this.fileToUpdate, true))) {
                 writer.newLine();
                 writer.write(script);
             }
-
-        } catch (IOException e) {
+    
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
-    }
+    }    
+    
 }

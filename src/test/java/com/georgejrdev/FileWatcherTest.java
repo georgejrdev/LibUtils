@@ -1,5 +1,6 @@
 package com.georgejrdev;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -29,6 +30,20 @@ public class FileWatcherTest {
         filePath = Paths.get(fileToWatch).toAbsolutePath(); 
         fileWatcher = new FileWatcher(fileToWatch, callback);
     }
+
+
+    @After
+    public void tearDown() throws IOException {
+        Files.write(filePath, new byte[0], StandardOpenOption.TRUNCATE_EXISTING);
+    
+        Path anotherFilePath = Paths.get("src/test/resources/anotherFile.txt").toAbsolutePath();
+        if (Files.exists(anotherFilePath)) {
+            Files.write(anotherFilePath, new byte[0], StandardOpenOption.TRUNCATE_EXISTING);
+        }
+    
+        fileWatcher.stop();
+    }
+    
 
 
     @Test
