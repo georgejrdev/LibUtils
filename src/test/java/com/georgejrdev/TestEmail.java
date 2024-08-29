@@ -20,24 +20,24 @@ public class TestEmail {
 
     @Test
     public void testSendNewEmail(){
-        this.email.sendEmail("Hi","how are you?","mail@iconscout.com");
+        this.email.send("Hi","how are you?","mail@iconscout.com");
     }
 
 
     @Test(expected = RuntimeException.class)
     public void testSendNewEmailWithInvalidEmail() {
-        this.email.sendEmail("Hi", "how are you?", "invalid-email");
+        this.email.send("Hi", "how are you?", "invalid-email");
     }
 
 
     @Test(expected = RuntimeException.class)
     public void testSendNewEmailWithoutAtSing() {
-        this.email.sendEmail("Hi", "how are you?", "invalidgmail.com");
+        this.email.send("Hi", "how are you?", "invalidgmail.com");
     }
 
 
     @Test(expected = RuntimeException.class)
     public void testSendNewEmailNoDot() {
-        this.email.sendEmail("Hi", "how are you?", "invalid@gmailcom");
+        this.email.send("Hi", "how are you?", "invalid@gmailcom");
     }
 }

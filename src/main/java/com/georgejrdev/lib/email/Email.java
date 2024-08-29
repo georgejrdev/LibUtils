@@ -24,7 +24,7 @@ public class Email{
     }
 
 
-    public void sendEmail(String subject, String body, String to) {
+    public void send(String subject, String body, String to) {
         try {
             checkEmailValidity(to);
 
