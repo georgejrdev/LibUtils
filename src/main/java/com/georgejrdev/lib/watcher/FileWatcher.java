@@ -8,10 +8,12 @@ public class FileWatcher implements Runnable {
         
     private FileWatcherCallback callback;
     private String fileToWatch;
+    private boolean running;
 
     public FileWatcher(String fileToWatch, FileWatcherCallback callback) {
         this.fileToWatch = fileToWatch;
         this.callback = callback;
+        this.running = true;
     }
 
 
@@ -22,7 +24,7 @@ public class FileWatcher implements Runnable {
             Path path = Paths.get(fileToWatch).getParent();
             path.register(watcher, StandardWatchEventKinds.ENTRY_MODIFY);
 
-            while (true){
+            while (running){
                 WatchKey key = watcher.take();
 
                 for (WatchEvent<?> event : key.pollEvents()){
@@ -41,5 +43,10 @@ public class FileWatcher implements Runnable {
         catch (IOException | InterruptedException e){
             e.printStackTrace();
         }
+    }
+
+
+    public void stop(){
+        this.running = false;
     }
 }
