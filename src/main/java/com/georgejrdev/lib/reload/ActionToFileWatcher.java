@@ -11,6 +11,14 @@ import com.georgejrdev.lib.watcher.FileWatcherCallback;
 import com.georgejrdev.lib.websocket.SimpleWebSocketServer;
 
 
+/**
+ * ActionToFileWatcher
+ * 
+ * <p>This class is used to call a callback when a file is modified</p>
+ * 
+ * @author George Jr
+ * @since 1.1.0
+ */
 public class ActionToFileWatcher implements FileWatcherCallback {
 
     private SimpleWebSocketServer webSocketServer;
@@ -18,6 +26,14 @@ public class ActionToFileWatcher implements FileWatcherCallback {
     private String fileToUpdate;
     private int websocketPort;
 
+    /**
+     * Constructor
+     *
+     * @param webSocketServer implementation of SimpleWebSocketServer
+     * @param websocketPort port of the websocket server
+     * @param fileToUpdate path of the file to watch
+     * @param parser implementation of Parser
+     */
     public ActionToFileWatcher(SimpleWebSocketServer webSocketServer, Parser parser, String fileToUpdate, int websocketPort) {
         this.webSocketServer = webSocketServer;
         this.parser = parser;
@@ -25,11 +41,25 @@ public class ActionToFileWatcher implements FileWatcherCallback {
         this.websocketPort = websocketPort;
     }
 
+    /**
+     * Constructor
+     *
+     * @param webSocketServer implementation of SimpleWebSocketServer
+     * @param websocketPort port of the websocket server
+     * @param fileToUpdate path of the file to watch
+     */
     public ActionToFileWatcher(SimpleWebSocketServer webSocketServer, String fileToUpdate, int websocketPort) {
         this(webSocketServer, null, fileToUpdate, websocketPort);       
     }
 
     
+    /**
+     * Action
+     * 
+     * <p>This method is called when a file is modified</p>
+     * <p>This method notifies the websocket server, so it can reload the page</p>
+     * <p>This method is synchronized</p>
+     */
     @Override
     public void action() {
         synchronized(this) {

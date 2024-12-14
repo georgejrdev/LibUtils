@@ -11,17 +11,37 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 
+/**
+ * SimpleHttpServer
+ * 
+ * <p>This class is used to create a simple http server</p>
+ * 
+ * @author George Jr
+ * @since 1.0.2
+ */
 public class SimpleHttpServer {
     
     private HttpServer server;
 
     
+    /**
+     * Start
+     * 
+     * <p>This method is used to start the http server</p>
+     *
+     * @param port port of the server
+     * @param filePath path of the file exposed by the server
+     * @throws IOException
+     */
     public void start(int port, String filePath) throws IOException {
         server = HttpServer.create(new InetSocketAddress(port), 0);
+
         server.createContext("/", new HttpHandler() {
+
             @Override
             public void handle(HttpExchange exchange) throws IOException {
                 byte[] response = Files.readAllBytes(Path.of(filePath));
+                
                 exchange.getResponseHeaders().add("Content-Type", "text/html; charset=UTF-8");
                 exchange.sendResponseHeaders(200, response.length);
             
@@ -38,6 +58,11 @@ public class SimpleHttpServer {
     }
 
 
+    /**
+     * Stop
+     * 
+     * <p>This method is used to stop the http server</p>
+     */
     public void stop() {
         if (server != null) {
             server.stop(0);

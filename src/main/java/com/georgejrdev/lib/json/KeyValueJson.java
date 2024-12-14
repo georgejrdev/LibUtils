@@ -15,11 +15,24 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 
+/**
+ * KeyValueJson
+ * 
+ * <p>This class is used to create a json file with key-value pairs</p>
+ * 
+ * @author George Jr
+ * @since 2.0.0
+ */
 public class KeyValueJson {
 
     private String path;
     private List<Map<String, Object>> content;
 
+    /**
+     * Constructor
+     *
+     * @param path path of the json file. Example: "path/to/file.json". If it doesn't exist, it will be created
+    */
     public KeyValueJson(String path) {
         this.path = path;
         this.content = new ArrayList<>();
@@ -29,17 +42,39 @@ public class KeyValueJson {
     }
 
 
+    /**
+     * Create Register
+     *
+     * <p>This method is used to create a new register in the json file</p>
+     * 
+     * @param newRegister register to be created in the json file in key-value format
+     */
     public void createRegister(Map<String, Object> newRegister) {
         content.add(newRegister);
         saveContent(); 
     }
 
 
+    /**
+     * Get Content
+     *
+     * <p>This method is used to get the content of the json file</p>
+     *
+     * @return content of the json file
+     */
     public List<Map<String, Object>> getContent() {
         return content;
     }
 
 
+    /**
+     * Update Register
+     *
+     * <p>This method is used to update a register in the json file</p>
+     *
+     * @param index index of the register to be updated
+     * @param updatedRegister register to be updated in the json file in key-value format
+     */
     public void updateRegister(int index, Map<String, Object> updatedRegister) {
         if (index >= 0 && index < content.size()) {
             content.set(index, updatedRegister);
@@ -56,6 +91,13 @@ public class KeyValueJson {
     }
 
     
+    /**
+     * Delete Register
+     *
+     * <p>This method is used to delete a register in the json file</p>
+     *
+     * @param index index of the register to be deleted
+     */
     public void deleteRegister(int index) {
         if (index >= 0 && index < content.size()) {
             content.remove(index);

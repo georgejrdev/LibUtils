@@ -7,6 +7,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
+/**
+ * Email
+ * 
+ * <p>This class is used to send emails easily and quickly</p>
+ * 
+ * @author George Jr
+ * @since 1.0.0
+ */
 public class Email{
 
     private String emailServer;
@@ -15,6 +23,14 @@ public class Email{
     private String email;
     private String password;
 
+    /**
+     * Constructor
+     * 
+     * @param emailServer like gmail, outlook, yahoo
+     * @param email email address of the sender
+     * @param password password of the sender
+     * @throws MessagingException launches if the email server is not found
+     */
     public Email(String emailServer, String email, String password) throws MessagingException {
         setEmailServer(emailServer);
         setEmail(email);
@@ -24,6 +40,15 @@ public class Email{
     }
 
 
+    /**
+     * Send
+     * 
+     * <p>This method is used to send emails</p>
+     * 
+     * @param subject subject of the email
+     * @param body body of the email
+     * @param to email address of the receiver
+     */
     public void send(String subject, String body, String to) {
         try {
             checkEmailValidity(to);

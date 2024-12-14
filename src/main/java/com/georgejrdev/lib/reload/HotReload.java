@@ -10,6 +10,14 @@ import com.georgejrdev.lib.watcher.FileWatcher;
 import com.georgejrdev.lib.websocket.SimpleWebSocketServer;
 
 
+/**
+ * HotReload
+ * 
+ * <p>This class is used to hot reload a file</p>
+ * 
+ * @author George Jr
+ * @since 1.0.2
+ */
 public class HotReload {
     
     private SimpleWebSocketServer webSocketServer;
@@ -23,6 +31,15 @@ public class HotReload {
     private int httpPort;
     private int websocketPort;
 
+    /**
+     * Constructor
+     *
+     * @param fileToWatch path of the file to watch (file to observe)
+     * @param fileToUpdate path of the file to update (file to reload)
+     * @param httpPort port of the http server that will expose the file
+     * @param websocketPort port of the websocket server
+     * @param parser parser implemented to parse original content to a new file format
+     */
     public HotReload(String fileToWatch, String fileToUpdate, int httpPort, int websocketPort, Parser parser){
         this.fileToWatch = fileToWatch;
         this.fileToUpdate = fileToUpdate;
@@ -36,11 +53,23 @@ public class HotReload {
         this.fileWatcher = new FileWatcher(this.fileToWatch, this.actionToFileWatcher);
     }
 
+    /**
+     * 
+     * @param fileToWatch path of the file to watch (file to observe)
+     * @param fileToUpdate path of the file to update (file to reload)
+     * @param httpPort port of the http server that will expose the file
+     * @param websocketPort port of the websocket server
+     */
     public HotReload(String fileToWatch, String fileToUpdate, int httpPort, int websocketPort){
         this(fileToWatch, fileToUpdate, httpPort, websocketPort, null);
     }
 
 
+    /**
+     * Start
+     * 
+     * <p>This method is used to start the HotReload</p>
+     */
     public void start(){
         new Thread(()->{
             try {

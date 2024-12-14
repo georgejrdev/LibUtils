@@ -8,7 +8,7 @@
 ![License](https://img.shields.io/github/license/georgejrdev/Lib-Utils.svg)
 ![Version](https://img.shields.io/badge/version-1.1.2-53918E.svg)
 ![Windows](https://img.shields.io/badge/made%20for-java-AD6845.svg)
-<a href="https://github.com/georgejrdev/Lib-Utils/raw/main/build/Lib-Utils-1.1.2.jar">![Windows](https://img.shields.io/badge/download-lib-AA155E.svg)</a>
+<a href="https://github.com/georgejrdev/Lib-Utils/raw/main/build/Lib-Utils-1.1.3.jar">![Windows](https://img.shields.io/badge/download-lib-AA155E.svg)</a>
 
 </div>
 
